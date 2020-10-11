@@ -9,6 +9,9 @@ from django_redis import get_redis_connection
 # Create your views here.
 from registers.models import User
 
+# from celery_taske.email.send_email import send_email
+from celery_taske.email.tasks import send_verify_email
+
 
 class ResterView(View):
     def get(self, request):
@@ -48,13 +51,18 @@ class ResterView(View):
         code = "%07d" % random.randint(0, 9999999)
         redis_conn = get_redis_connection("code")
         redis_conn.setex(f"{email}_id",3000, code)
-        email = email + "&&" +code
-        str_pass = pickle.dumps(email)
+        emails = email + "&&" +code
+        str_pass = pickle.dumps(emails)
         str_pass = base64.b64encode(str_pass)
         str_pass = str_pass.decode()
         print(str_pass)
-        url_path = f'192.168.1.107/regsterdelail/{str_pass}'
-
+        url_path = f'<a href="http://192.168.1.107:8000/regsterdelail/{str_pass}">注册</a>'
+        try:
+            send_verify_email.delay(email, url_path)
+            # send_email(email, url_path)
+        except Exception as e:
+            raise e
+            return http.HttpResponseNotFound(e)
 
         return redirect(reverse("info_login:login"))
 
@@ -85,7 +93,7 @@ class RestView(View):
         try:
             user = User.objects.create_user(username=name, email=email, password=password, first_name=lastname, last_name=last_name, terms_opt_in=terms_opt_in)
         except Exception as e:
-            print(e)
+
             return http.HttpResponseNotFound('注册失败')
 
 
