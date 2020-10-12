@@ -20,5 +20,7 @@ urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(r'^', include('registers.urls', namespace="info_rester")),
     url(r'^', include("logins.urls", namespace="info_login")),
-    url(r'^', include('indexs.urls', namespace="info_index"))
+    url(r'^', include('indexs.urls', namespace="info_index")),
+    url(r'^', include('videoviews.urls', namespace="info_video")),
+    url(r'^', include('descdelail.urls', namespace="info_desc"))
 ]

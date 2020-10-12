@@ -16,8 +16,10 @@ class VideoModel(models.Model):#视频表
     imagepath = models.CharField(max_length=2000, null=True, verbose_name="图片地址")
     saveimagepath = models.CharField(max_length=500, null=True, verbose_name="图片保存地址")
     score = models.FloatField(max_length=10, null=True, verbose_name="评分")
+    secorews = models.IntegerField(default=1314,verbose_name="评分人数")
     status = models.IntegerField(max_length=10, null=True, verbose_name="状态")
     categroy = models.ForeignKey(CategroyModel,verbose_name="类型")
+    activate = models.IntegerField(default=1, verbose_name="观看量")
 
     class Meta:
         db_table = "tb_video"
@@ -28,3 +30,15 @@ class ClassificationModel(models.Model):
 
     class Meta:
         db_table = "tb_classificat"
+
+class MovieDelailModel(models.Model):
+    name = models.CharField(max_length=100, null=True, verbose_name="主演")
+    refer = models.CharField(max_length=500, null=True)
+    categroy = models.CharField(max_length=500, null=True)
+    des = models.CharField(max_length=3000, null=True)
+    video = models.ForeignKey(VideoModel)
+
+    class Meta:
+        db_table = "tb_moviedetailtable"
+
+
